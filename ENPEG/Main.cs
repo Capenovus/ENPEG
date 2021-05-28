@@ -13,8 +13,8 @@ namespace ENPEG
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        string path;
-        string iconpath;
+        private string path;
+        private string iconpath;
         public Main()
         {
             InitializeComponent();
@@ -22,11 +22,15 @@ namespace ENPEG
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (path == null || iconpath == null || textBox1.Text == null)
+            {
+                MessageBox.Show("Please set all Values first", "ERROR", MessageBoxButtons.OK);
+                return;
+            }
             string path1 = path.Replace("\\", "\\\\");
             string iconpath1 = iconpath.Replace("\\", "\\\\");
             var name = textBox1.Text;
-            if (path != null && iconpath != null && name != null) new RegeditGen().Create(name, path1, iconpath1);
-            else MessageBox.Show("Please set all Values first", "ERROR", MessageBoxButtons.OK);
+            new RegeditGen().Create(name, path1, iconpath1);
         }
 
         private void button2_Click(object sender, EventArgs e)
