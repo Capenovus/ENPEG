@@ -11,7 +11,7 @@ Create new Navigation Entries like this one
 # How to use
 
 ## Generate new Entry
-1. Download the latest Release from GitHub <a href="https://github.com/Boring69/ENPEG/releases/">here</a>
+1. Download the latest Release from GitHub <a href="https://github.com/Boring69/ENPEG/releases/latest">here</a>
 2. Run the executable as Administrator
 3. Type in a name for the Navigation Entry
 4. Select the Destination Path and the Icon that's going to be displayed by clicking on the buttons
