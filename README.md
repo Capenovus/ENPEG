@@ -17,8 +17,6 @@ Create new Navigation Entries like this one
 4. Select the Destination Path and the Icon that's going to be displayed by clicking on the buttons
    - Icons preferably 32px x 32px
 6. Click Generate
-7. You will be prompted if you want to import key.reg right away. If you want to inspect the .reg file select no, otherwise select yes
-   - You might have to reboot after a successful import
 
 ## Remove existing Entry
 1. Open Regedit (Win + r → regedit.exe)
