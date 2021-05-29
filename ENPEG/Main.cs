@@ -27,10 +27,8 @@ namespace ENPEG
                 MessageBox.Show("Please set all Values first", "ERROR", MessageBoxButtons.OK);
                 return;
             }
-            string path1 = path.Replace("\\", "\\\\");
-            string iconpath1 = iconpath.Replace("\\", "\\\\");
             var name = textBox1.Text;
-            new RegeditGen().Create(name, path1, iconpath1);
+            new RegeditGen().Create(name, path, iconpath);
         }
 
         private void button2_Click(object sender, EventArgs e)

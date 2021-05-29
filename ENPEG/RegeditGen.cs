@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using Microsoft.Win32;
 
 namespace ENPEG
 {
@@ -12,58 +14,62 @@ namespace ENPEG
         {
             GUIDgen gen = new GUIDgen();
             var guid = gen.Generate();
+            var mpath2 = $"HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}\\";
+            const string nsp = "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel";
+            var ns = $"HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\{guid}";
+            const string clsid = "{0E5AAE11-A475-4c5b-AB00-C66DE400274E}";
+            const string shellpath = "%SYSTEMROOT%\\SysWow64\\shell32.dll";
 
-            var regcontent = "Windows Registry Editor Version 5.00\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}]\n" +
-                             $"@=\"{name}\"\n" +
-                             $"\"System.IsPinnedToNamespaceTree\"=dword:00000001\n" +
-                             $"\"SortOrderIndex\"=dword:00000042\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}\\InProcServer32]\n" +
-                             $"@=hex(2):25,00,53,00,59,00,53,00,54,00,45,00,4D,00,52,00,4F,00,4F,00,54,00,\\\n" +
-                             $"25,00,5C,00,73,00,79,00,73,00,74,00,65,00,6D,00,33,00,32,00,5C,00,73,00,68,\\\n" +
-                             $"00,65,00,6C,00,6C,00,33,00,32,00,2E,00,64,00,6C,00,6C,00,00,00\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}\\ShellFolder]\n" +
-                             $"\"FolderValueFlags\"=dword:00000028\n" +
-                             $"\"Attributes\"=dword:f080004d\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\CLSID\\{guid}]\n" +
-                             $"@=\"{name}\"\n" +
-                             $"\"System.IsPinnedToNamespaceTree\"=dword:00000001\n" +
-                             $"\"SortOrderIndex\"=dword:00000042\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\CLSID\\{guid}\\InProcServer32]\n" +
-                             $"@=hex(2):25,00,53,00,59,00,53,00,54,00,45,00,4D,00,52,00,4F,00,4F,00,54,00,\\\n" +
-                             $"25,00,5C,00,73,00,79,00,73,00,74,00,65,00,6D,00,33,00,32,00,5C,00,73,00,68,\\\n" +
-                             $"00,65,00,6C,00,6C,00,33,00,32,00,2E,00,64,00,6C,00,6C,00,00,00\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\CLSID\\{guid}\\ShellFolder]\n" +
-                             $"\"FolderValueFlags\"=dword:00000028\n" +
-                             $"\"Attributes\"=dword:f080004d\r\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}\\DefaultIcon]\n" +
-                             $"@=\"{iconpath}\"\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}\\Instance]\n" +
-                             $"\"CLSID\"=\"{{0E5AAE11-A475-4c5b-AB00-C66DE400274E}}\"\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}\\Instance\\InitPropertyBag]\n" +
-                             $"\"Attributes\"=dword:00000011\n" +
-                             $"\"TargetFolderPath\"=\"{path}\"\n\n" +
-                             $"[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel]\n" +
-                             $"\"{guid}\"=dword:00000001\n\n" +
-                             $"[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\{guid}]\n" +
-                             $"@=\"{name}\"\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\CLSID\\{guid}\\DefaultIcon]\n" +
-                             $"@=\"{iconpath}\"\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\CLSID\\{guid}\\Instance]\n" +
-                             $"\"CLSID\"=\"{{0E5AAE11-A475-4c5b-AB00-C66DE400274E}}\"\n\n" +
-                             $"[HKEY_CURRENT_USER\\Software\\Classes\\CLSID\\{guid}\\Instance\\InitPropertyBag]\n" +
-                             $"\"Attributes\"=dword:00000011\n" +
-                             $"\"TargetFolderPath\"=\"{path}\"";
+            //Start - Main Path 1
+            var key = 
+                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+                    .OpenSubKey("SOFTWARE\\Classes\\CLSID", true)
+                    ?.CreateSubKey(guid, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            key?.SetValue("", name);
+            key?.SetValue("System.IsPinnedToNamespaceTree", "1", RegistryValueKind.DWord);
+            key?.SetValue("SortOrderIndex", "66", RegistryValueKind.DWord);
 
-            File.WriteAllBytes("key.reg", Encoding.ASCII.GetBytes(regcontent));
+            var keyInProcServer32 = key?.CreateSubKey("InProcServer32", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyInProcServer32?.SetValue("", shellpath, RegistryValueKind.ExpandString);
 
-            DialogResult result = MessageBox.Show("key.reg file has been generated. Import now?", "Success!", MessageBoxButtons.YesNo);
-            if (result == DialogResult.Yes)
-            {
-                Process regeditProcess = Process.Start("regedit.exe", "/s key.reg");
-                regeditProcess.WaitForExit();
-                MessageBox.Show("Import Successful! You might have to restart your PC", "Success!", MessageBoxButtons.OK);
-            }
+            var keyShellFolder = key?.CreateSubKey("ShellFolder", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyShellFolder?.SetValue("FolderValueFlags", "40", RegistryValueKind.DWord);
+            keyShellFolder?.SetValue("Attributes", unchecked((int)4034920525), RegistryValueKind.DWord);
+
+            var keyInstance = key?.CreateSubKey("Instance", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyInstance?.SetValue("CLSID", clsid);
+
+            var keyIcon = key?.CreateSubKey("DefaultIcon", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyIcon?.SetValue("", iconpath);
+
+            var keyInstanceProptertyBag = keyInstance?.CreateSubKey("InitPropertyBag", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyInstanceProptertyBag?.SetValue("Attrivutes", "17", RegistryValueKind.DWord);
+            keyInstanceProptertyBag?.SetValue("TargetFolderPath", path);
+
+
+            //Start - Main Path 2
+            Registry.SetValue(mpath2, "", name);
+            Registry.SetValue(mpath2, "System.IsPinnedToNamespaceTree", "1", RegistryValueKind.DWord);
+            Registry.SetValue(mpath2, "SortOrderIndex", "66", RegistryValueKind.DWord);
+
+            Registry.SetValue($"{mpath2}InProcServer32", "", shellpath, RegistryValueKind.ExpandString);
+
+            Registry.SetValue($"{mpath2}ShellFolder", "FolderValueFlags", "40", RegistryValueKind.DWord);
+            Registry.SetValue($"{mpath2}ShellFolder", "Attributes", unchecked((int)4034920525), RegistryValueKind.DWord);
+
+            Registry.SetValue($"{mpath2}Instance", "CLSID", clsid);
+            Registry.SetValue($"{mpath2}Instance\\InitPropertyBag", "Attributes", "17", RegistryValueKind.DWord);
+            Registry.SetValue($"{mpath2}Instance\\InitPropertyBag", "TargetFolderPath", path);
+            
+            Registry.SetValue($"{mpath2}DefaultIcon", "", iconpath);
+
+
+            // Start - Misc
+            Registry.SetValue(nsp, guid, "1", RegistryValueKind.DWord);
+            Registry.SetValue(ns, "", name);
+            
+
+            MessageBox.Show("Done");
 
         }
     }
