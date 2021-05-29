@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace ENPEG
@@ -14,9 +9,6 @@ namespace ENPEG
         {
             GUIDgen gen = new GUIDgen();
             var guid = gen.Generate();
-            var mpath2 = $"HKEY_CURRENT_USER\\Software\\Classes\\Wow6432Node\\CLSID\\{guid}\\";
-            const string nsp = "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel";
-            var ns = $"HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\{guid}";
             const string clsid = "{0E5AAE11-A475-4c5b-AB00-C66DE400274E}";
             const string shellpath = "%SYSTEMROOT%\\SysWow64\\shell32.dll";
 
@@ -48,26 +40,42 @@ namespace ENPEG
 
 
             //Start - Main Path 2
-            Registry.SetValue(mpath2, "", name);
-            Registry.SetValue(mpath2, "System.IsPinnedToNamespaceTree", "1", RegistryValueKind.DWord);
-            Registry.SetValue(mpath2, "SortOrderIndex", "66", RegistryValueKind.DWord);
+            var key_2 =
+                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+                    .OpenSubKey("Software\\Classes\\Wow6432Node\\CLSID", true)
+                    ?.CreateSubKey(guid, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            key_2?.SetValue("", name);
+            key_2?.SetValue("System.IsPinnedToNamespaceTree", "1", RegistryValueKind.DWord);
+            key_2?.SetValue("SortOrderIndex", "66", RegistryValueKind.DWord);
 
-            Registry.SetValue($"{mpath2}InProcServer32", "", shellpath, RegistryValueKind.ExpandString);
+            var keyInProcServer32_2 = key_2?.CreateSubKey("InProcServer32", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyInProcServer32_2?.SetValue("", shellpath, RegistryValueKind.ExpandString);
 
-            Registry.SetValue($"{mpath2}ShellFolder", "FolderValueFlags", "40", RegistryValueKind.DWord);
-            Registry.SetValue($"{mpath2}ShellFolder", "Attributes", unchecked((int)4034920525), RegistryValueKind.DWord);
+            var keyShellFolder_2 = key_2?.CreateSubKey("ShellFolder", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyShellFolder_2?.SetValue("FolderValueFlags", "40", RegistryValueKind.DWord);
+            keyShellFolder_2?.SetValue("Attributes", unchecked((int)4034920525), RegistryValueKind.DWord);
 
-            Registry.SetValue($"{mpath2}Instance", "CLSID", clsid);
-            Registry.SetValue($"{mpath2}Instance\\InitPropertyBag", "Attributes", "17", RegistryValueKind.DWord);
-            Registry.SetValue($"{mpath2}Instance\\InitPropertyBag", "TargetFolderPath", path);
-            
-            Registry.SetValue($"{mpath2}DefaultIcon", "", iconpath);
+            var keyInstance_2 = key_2?.CreateSubKey("Instance", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyInstance_2?.SetValue("CLSID", clsid);
+
+            var keyIcon_2 = key_2?.CreateSubKey("DefaultIcon", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyIcon_2?.SetValue("", iconpath);
+
+            var keyInstanceProptertyBag_2 = keyInstance_2?.CreateSubKey("InitPropertyBag", RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyInstanceProptertyBag_2?.SetValue("Attrivutes", "17", RegistryValueKind.DWord);
+            keyInstanceProptertyBag_2?.SetValue("TargetFolderPath", path);
 
 
             // Start - Misc
-            Registry.SetValue(nsp, guid, "1", RegistryValueKind.DWord);
-            Registry.SetValue(ns, "", name);
-            
+            var keyNsp = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+                .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel", true);
+            keyNsp?.SetValue(guid, "1", RegistryValueKind.DWord);
+
+            var keyNs =
+                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+                    .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace", true)
+                    ?.CreateSubKey(guid, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            keyNs?.SetValue("", name);
 
             MessageBox.Show("Done");
 
