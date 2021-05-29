@@ -35,7 +35,7 @@ namespace ENPEG
             keyIcon?.SetValue("", iconpath);
 
             var keyInstanceProptertyBag = keyInstance?.CreateSubKey("InitPropertyBag", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            keyInstanceProptertyBag?.SetValue("Attrivutes", "17", RegistryValueKind.DWord);
+            keyInstanceProptertyBag?.SetValue("Attributes", "17", RegistryValueKind.DWord);
             keyInstanceProptertyBag?.SetValue("TargetFolderPath", path);
 
 
@@ -62,7 +62,7 @@ namespace ENPEG
             keyIcon_2?.SetValue("", iconpath);
 
             var keyInstanceProptertyBag_2 = keyInstance_2?.CreateSubKey("InitPropertyBag", RegistryKeyPermissionCheck.ReadWriteSubTree);
-            keyInstanceProptertyBag_2?.SetValue("Attrivutes", "17", RegistryValueKind.DWord);
+            keyInstanceProptertyBag_2?.SetValue("Attributes", "17", RegistryValueKind.DWord);
             keyInstanceProptertyBag_2?.SetValue("TargetFolderPath", path);
 
 
