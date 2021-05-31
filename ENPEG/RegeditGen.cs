@@ -1,5 +1,5 @@
-﻿using System.Windows.Forms;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using System.Windows.Forms;
 
 namespace ENPEG
 {
@@ -13,7 +13,7 @@ namespace ENPEG
             const string shellpath = "%SYSTEMROOT%\\SysWow64\\shell32.dll";
 
             //Start - Main Path 1
-            var key = 
+            var key =
                 RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
                     .OpenSubKey("SOFTWARE\\Classes\\CLSID", true)
                     ?.CreateSubKey(guid, RegistryKeyPermissionCheck.ReadWriteSubTree);
@@ -37,7 +37,6 @@ namespace ENPEG
             var keyInstanceProptertyBag = keyInstance?.CreateSubKey("InitPropertyBag", RegistryKeyPermissionCheck.ReadWriteSubTree);
             keyInstanceProptertyBag?.SetValue("Attributes", "17", RegistryValueKind.DWord);
             keyInstanceProptertyBag?.SetValue("TargetFolderPath", path);
-
 
             //Start - Main Path 2
             var key_2 =
@@ -65,7 +64,6 @@ namespace ENPEG
             keyInstanceProptertyBag_2?.SetValue("Attributes", "17", RegistryValueKind.DWord);
             keyInstanceProptertyBag_2?.SetValue("TargetFolderPath", path);
 
-
             // Start - Misc
             var keyNsp = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
                 .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel", true);
@@ -78,7 +76,6 @@ namespace ENPEG
             keyNs?.SetValue("", name);
 
             MessageBox.Show("Done");
-
         }
     }
 }

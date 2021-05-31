@@ -1,6 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
-
+﻿using System.Security.Cryptography;
 
 namespace ENPEG
 {
@@ -10,6 +8,7 @@ namespace ENPEG
             'A', 'B', 'C', 'D', 'E', 'F',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
         };
+
         private static string RandomString(int length)
         {
             char[] identifier = new char[length];
@@ -28,6 +27,7 @@ namespace ENPEG
 
             return new string(identifier);
         }
+
         public string Generate()
         {
             return $"{{{RandomString(8)}-{RandomString(4)}-{RandomString(4)}-{RandomString(4)}-{RandomString(12)}}}";
