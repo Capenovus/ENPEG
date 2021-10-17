@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ENPEG", "ENPEG\ENPEG.csproj", "{23605633-4B4F-4DF1-93EE-C7D60CA25CB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ENPE-RemovalTool", "ENPE-RemovalTool\ENPE-RemovalTool.csproj", "{9795CAA7-18F8-4E2D-B08E-ADB13FB27388}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ENPE-RemovalTool", "ENPE-RemovalTool\ENPE-RemovalTool.csproj", "{4CAB57C9-59D9-4B1F-BA0A-E4E22F4071A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{23605633-4B4F-4DF1-93EE-C7D60CA25CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23605633-4B4F-4DF1-93EE-C7D60CA25CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23605633-4B4F-4DF1-93EE-C7D60CA25CB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9795CAA7-18F8-4E2D-B08E-ADB13FB27388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9795CAA7-18F8-4E2D-B08E-ADB13FB27388}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9795CAA7-18F8-4E2D-B08E-ADB13FB27388}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9795CAA7-18F8-4E2D-B08E-ADB13FB27388}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CAB57C9-59D9-4B1F-BA0A-E4E22F4071A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CAB57C9-59D9-4B1F-BA0A-E4E22F4071A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CAB57C9-59D9-4B1F-BA0A-E4E22F4071A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CAB57C9-59D9-4B1F-BA0A-E4E22F4071A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

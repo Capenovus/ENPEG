@@ -1,27 +1,31 @@
-﻿using System;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using System;
+
 
 namespace ENPE_RemovalTool
 {
+#nullable enable
+#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
     internal class Program
     {
         private static void Main()
         {
             Init();
         }
-
+        
         private static void Init()
         {
             Console.WriteLine("Please Wait");
-            var keyNs =
-                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+            RegistryKey? keyNs =
+                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)?
                     .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace", true);
-            var guids = keyNs?.GetSubKeyNames();
+
+            string[]? guids = keyNs?.GetSubKeyNames();
             Console.Clear();
             for (var i = 0; i < guids?.Length; i++)
             {
-                var key =
-                    RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+                RegistryKey? key =
+                    RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)?
                         .OpenSubKey($"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\{guids[i]}", true);
                 Console.WriteLine($"[{i}] {key?.GetValue("")}");
             }
@@ -31,7 +35,8 @@ namespace ENPE_RemovalTool
                 var option = Console.ReadLine();
                 if (int.TryParse(option, out var id))
                 {
-                    Remove(guids?[id]);
+                    if (guids?[id] == null) break;
+                    Remove(guids[id]);
                     break;
                 }
                 Console.WriteLine("Please select a Number");
@@ -43,26 +48,27 @@ namespace ENPE_RemovalTool
         private static void Remove(string guid)
         {
             //Start - Main Path 1
-            var key =
-                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+            RegistryKey? key =
+                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)?
                     .OpenSubKey($"SOFTWARE\\Classes\\CLSID", true);
-            key?.DeleteSubKeyTree(guid);
+            try { key?.DeleteSubKeyTree(guid); } catch { }
 
             //Start - Main Path 2
-            var key2 =
-                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+            RegistryKey? key2 =
+                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)?
                     .OpenSubKey("Software\\Classes\\Wow6432Node\\CLSID", true);
-            key2?.DeleteSubKeyTree(guid);
+            try { key2?.DeleteSubKeyTree(guid); } catch { }
 
             // Start - Misc
-            var keyNsp = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+            RegistryKey? keyNsp = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)?
                 .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel", true);
-            keyNsp?.DeleteValue(guid);
+            try { keyNsp?.DeleteValue(guid); } catch { }
 
-            var keyNs =
-                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)
+            RegistryKey? keyNs =
+                RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64)?
                     .OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace", true);
-            keyNs?.DeleteSubKeyTree(guid);
+            try { keyNs?.DeleteSubKeyTree(guid); } catch { }
         }
     }
+#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
 }
