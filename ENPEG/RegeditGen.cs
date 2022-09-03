@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace ENPEG
 {
-    public class RegeditGen
+    public static class RegeditGen
     {
-        public void Create(string name, string path, string iconpath)
+        public static void Create(string name, string path, string iconpath)
         {
             GUIDgen gen = new GUIDgen();
             var guid = gen.Generate();

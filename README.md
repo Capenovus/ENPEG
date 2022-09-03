@@ -1,7 +1,6 @@
 # ENPEG
 (Windows) Explorer Navigation Pane Entry Generator
 <br>
-When you don't want to use Quick Access anymore
 # Info
 
 Create new Navigation Entries like this one
@@ -23,6 +22,3 @@ Create new Navigation Entries like this one
 2. Run the ENPE-RemovalTool executable as Administrator
 3. Type in the numeric ID of the Entry which you want to delete
 4. Hit Enter
-
-## Additional Notes
-- I apologize for the horrendous UI
